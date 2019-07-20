@@ -1,69 +1,94 @@
 require 'set'
 
-def square(i,j)
-  [i,j]
-end
+class N_Queens
+  def initialize(n)
+    @N = n
+    @attacks  = Array.new(n*n) { nil }
+    @counts = Array.new(n*n) { 0 }
+    @queens = []
+    @solutions = []
+    @type = :first
+  end
 
-def one_direction_from(n, i, j, i_delta, j_delta)
-  i_next, j_next = i+i_delta, j+j_delta
-  attacked = Set.new
-  while (0 <= i_next && i_next < n &&
-         0 <= j_next && j_next < n) do
-    attacked.add(square(i_next, j_next))
+  def to_square(i,j)
+    i*@N+j
+  end
+
+  def from_square(square)
+    [square / @N, square % @N]
+  end
+
+  def one_direction_from(squares, i_next, j_next, i_delta, j_delta)
     i_next += i_delta
     j_next += j_delta
+    while (0 <= i_next && i_next < @N &&
+           0 <= j_next && j_next < @N) do
+      squares << to_square(i_next, j_next)
+      i_next += i_delta
+      j_next += j_delta
+    end
   end
-  attacked
-end
 
-ATTACKED_BY = {}
-
-def attacked_by(n, square)
-  i, j = square
-  attacked = Set.new
-  attacked.add(square)
-  [[1,0], [0,1], [1,1], [-1,1]].each do |i_delta, j_delta|
-    attacked = attacked.merge(one_direction_from(n, i, j,  i_delta,  j_delta))
-                       .merge(one_direction_from(n, i, j, -i_delta, -j_delta))
+  def attacks(sq)
+    i_next, j_next = from_square(sq)
+    squares = [sq]
+    [[1,0], [0,1], [1,1], [-1,1]].each do |i_delta, j_delta|
+      one_direction_from(squares, i_next, j_next,  i_delta,  j_delta)
+      one_direction_from(squares, i_next, j_next, -i_delta, -j_delta)
+    end
+    squares
   end
-  attacked
-end
 
-def cached_attacked_by(n, square)
-  (ATTACKED_BY[square] ||= attacked_by(n, square)).clone
-end
-
-def new_attacked_by(n, square, attacked)
-  cached_attacked_by(n, square).delete_if{ |square| attacked.member?(square) }
-end
-
-def place_queen(n, depth, i, placed=Set.new, attacked=Set.new)
-  return placed if depth == n
-  for j in 0..(n-1) do
-    candidate = square(i,j)
-    next if attacked.member?(candidate)
-    placed.add(candidate)
-    new_hits = new_attacked_by(n, candidate, attacked)
-    attacked = attacked.merge(new_hits)
-    result = place_queen(n, depth+1, i+1, placed, attacked)
-    return result if !result.nil?
-    placed.delete(candidate)
-    attacked = attacked.subtract(new_hits)
+  def place_queens(depth=0, i=0)
+    if depth == @N
+      @solutions << @queens.clone
+      return
+    end
+    for j in 0..(@N-1) do
+      candidate = to_square(i,j)
+      next if @counts[candidate].positive?
+      @queens.push(candidate)
+      hits = (@attacks[candidate] ||= attacks(candidate))
+      hits.each { |sq| @counts[sq] += 1 }
+      result = place_queens(depth+1, i+1)
+      return if @type == :first && !@solutions.empty?
+      @queens.pop
+      hits.each { |sq| @counts[sq] -= 1 }
+    end
+    nil
   end
-  nil
-end
 
-def set_to_s(set)
-  set.nil? ? "nil" : "[#{set.map{|square| square.inspect }.join(', ')}]"
-end
+  def solve_first
+    @type = :first
+    place_queens
+    @solutions.first
+  end
 
-def set_to_board(set)
-  board = Array.new(set.size){ ['.'] * set.size }
-  set.each{ |square| board[square[0]][square[1]] = "Q" }
-  board.map{ |row| row.join('') }.join("\n")
+  def solve_all
+    @type = :all
+    place_queens
+    @solutions
+  end
+
+  def set_to_s(set)
+    set.nil? ? "nil" : "[#{set.map{|sq| from_square(sq).inspect }.join(', ')}]"
+  end
+
+  def set_to_board(set)
+    board = Array.new(set.size){ ['.'] * set.size }
+    set.each do |sq|
+      i, j = from_square(sq)
+      board[i][j] = "Q"
+    end
+    board.map{ |row| row.join('') }.join("\n")
+  end
 end
 
 N = (ARGV[0] || 8).to_i
-solution = place_queen(N, 0, 0)
-puts set_to_s(solution)
-puts set_to_board(solution)
+n_queens = N_Queens.new(N)
+solutions = n_queens.solve_all
+solutions.each_with_index do |solution, i|
+  puts "#{i}:"
+  puts n_queens.set_to_s(solution)
+  puts n_queens.set_to_board(solution)
+end
