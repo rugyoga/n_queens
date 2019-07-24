@@ -1,7 +1,7 @@
 class N_Queens
   def initialize(n)
     @N = n
-    @attacks  = Array.new(n*n) { nil }
+    @attacks = Array.new(n*n) { nil }
     @counts = Array.new(n*n) { 0 }
     @queens = []
   end
@@ -41,7 +41,7 @@ class N_Queens
     else
       for rank in 0..(@N-1) do
         queen = to_square(file, rank)
-        next if @counts[queen].positive?
+        next if @counts[queen] > 0
         @queens.push(queen)
         hits = (@attacks[queen] ||= attacks(queen))
         hits.each { |square| @counts[square] += 1 }
