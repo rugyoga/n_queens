@@ -1,94 +1,81 @@
-require 'set'
-
 class N_Queens
   def initialize(n)
     @N = n
     @attacks  = Array.new(n*n) { nil }
     @counts = Array.new(n*n) { 0 }
     @queens = []
-    @solutions = []
-    @type = :first
   end
 
-  def to_square(i,j)
-    i*@N+j
+  def to_square(file, rank)
+    file*@N+rank
   end
 
   def from_square(square)
     [square / @N, square % @N]
   end
 
-  def one_direction_from(squares, i_next, j_next, i_delta, j_delta)
-    i_next += i_delta
-    j_next += j_delta
-    while (0 <= i_next && i_next < @N &&
-           0 <= j_next && j_next < @N) do
-      squares << to_square(i_next, j_next)
-      i_next += i_delta
-      j_next += j_delta
+  def one_direction_from(squares, file, rank, file_delta, rank_delta)
+    file += file_delta
+    rank += rank_delta
+    while (0 <= file && file < @N &&
+           0 <= rank && rank < @N) do
+      squares << to_square(file, rank)
+      file += file_delta
+      rank += rank_delta
     end
   end
 
-  def attacks(sq)
-    i_next, j_next = from_square(sq)
-    squares = [sq]
-    [[1,0], [0,1], [1,1], [-1,1]].each do |i_delta, j_delta|
-      one_direction_from(squares, i_next, j_next,  i_delta,  j_delta)
-      one_direction_from(squares, i_next, j_next, -i_delta, -j_delta)
+  def attacks(queen)
+    file, rank = from_square(queen)
+    squares = [queen]
+    [[1,0], [0,1], [1,1], [-1,1]].each do |file_delta, rank_delta|
+      one_direction_from(squares, file, rank,  file_delta,  rank_delta)
+      one_direction_from(squares, file, rank, -file_delta, -rank_delta)
     end
     squares
   end
 
-  def place_queens(depth=0, i=0)
+  def solve(depth=0, file=0, &block)
     if depth == @N
-      @solutions << @queens.clone
-      return
+      yield @queens
+    else
+      for rank in 0..(@N-1) do
+        queen = to_square(file, rank)
+        next if @counts[queen].positive?
+        @queens.push(queen)
+        hits = (@attacks[queen] ||= attacks(queen))
+        hits.each { |square| @counts[square] += 1 }
+        solve(depth+1, file+1, &block)
+        @queens.pop
+        hits.each { |square| @counts[square] -= 1 }
+      end
     end
-    for j in 0..(@N-1) do
-      candidate = to_square(i,j)
-      next if @counts[candidate].positive?
-      @queens.push(candidate)
-      hits = (@attacks[candidate] ||= attacks(candidate))
-      hits.each { |sq| @counts[sq] += 1 }
-      result = place_queens(depth+1, i+1)
-      return if @type == :first && !@solutions.empty?
-      @queens.pop
-      hits.each { |sq| @counts[sq] -= 1 }
+  end
+
+  def square_to_s(square)
+    file, rank = from_square(square)
+    "#{(file+"a".ord).chr}#{rank+1}"
+  end
+
+  def set_to_s(squares)
+    squares.nil? ? "nil" : "[#{squares.map{|square| square_to_s(square) }.join(', ')}]"
+  end
+
+  def set_to_board(queens)
+    board = Array.new(@N){ ['.'] * @N }
+    queens.each do |queen|
+      file, rank = from_square(queen)
+      board[file][rank] = "Q"
     end
-    nil
-  end
-
-  def solve_first
-    @type = :first
-    place_queens
-    @solutions.first
-  end
-
-  def solve_all
-    @type = :all
-    place_queens
-    @solutions
-  end
-
-  def set_to_s(set)
-    set.nil? ? "nil" : "[#{set.map{|sq| from_square(sq).inspect }.join(', ')}]"
-  end
-
-  def set_to_board(set)
-    board = Array.new(set.size){ ['.'] * set.size }
-    set.each do |sq|
-      i, j = from_square(sq)
-      board[i][j] = "Q"
-    end
-    board.map{ |row| row.join('') }.join("\n")
+    board.map{ |rank| rank.join('') }.join("\n")
   end
 end
 
 N = (ARGV[0] || 8).to_i
 n_queens = N_Queens.new(N)
-solutions = n_queens.solve_all
-solutions.each_with_index do |solution, i|
-  puts "#{i}:"
+i = 0
+n_queens.solve do |solution|
+  puts "#{i += 1}:"
   puts n_queens.set_to_s(solution)
   puts n_queens.set_to_board(solution)
 end
