@@ -57,25 +57,25 @@ class N_Queens
     "#{(file+"a".ord).chr}#{rank+1}"
   end
 
-  def set_to_s(squares)
-    squares.nil? ? "nil" : "[#{squares.map{|square| square_to_s(square) }.join(', ')}]"
+  def squares_to_s(squares)
+    "[#{squares.map{|square| square_to_s(square) }.join(', ')}]"
   end
 
-  def set_to_board(queens)
+  def queens_to_board(queens)
     board = Array.new(@N){ ['.'] * @N }
     queens.each do |queen|
       file, rank = from_square(queen)
-      board[file][rank] = "Q"
+      board[rank][file] = "Q"
     end
-    board.map{ |rank| rank.join('') }.join("\n")
+    board.reverse.map{ |rank| rank.join('') }.join("\n")
   end
 end
 
 N = (ARGV[0] || 8).to_i
 n_queens = N_Queens.new(N)
 i = 0
-n_queens.solve do |solution|
+n_queens.solve do |queens|
   puts "#{i += 1}:"
-  puts n_queens.set_to_s(solution)
-  puts n_queens.set_to_board(solution)
+  puts n_queens.squares_to_s(queens)
+  puts n_queens.queens_to_board(queens)
 end
