@@ -45,7 +45,7 @@ class N_Queens
     @attacks[queen]
   end
 
-  def solve(depth : Int32=0, file : Index=0, &block : Array(Square) -> Nil)
+  def solve(depth : Int32=0, file : Index=0, &block : Array(Square) -> Array(Square))
     if depth == @N
       yield @queens
     else
@@ -88,4 +88,5 @@ n_queens.solve() do |queens|
   puts "#{i += 1}:"
   puts n_queens.squares_to_s(queens)
   puts n_queens.queens_to_board(queens)
+  queens
 end
