@@ -1,26 +1,7 @@
 class N_Queens
   def initialize(n)
     @N = n
-    @properties = {rank: 0, northwest: 0, northeast: 0}
     @queens = []
-  end
-
-  def test_and_set(file, rank)
-    return false if get(@properties[:rank], rank)
-    nw = northwest(file, rank)
-    return false if get(@properties[:northwest], nw)
-    ne = northeast(file, rank)
-    return false if get(@properties[:northeast], ne)
-    @properties[:rank]      = set(@properties[:rank], rank)
-    @properties[:northwest] = set(@properties[:northwest], nw)
-    @properties[:northeast] = set(@properties[:northeast], ne)
-    true
-  end
-
-  def clear_all(file, rank)
-    @properties[:rank]      = clear(@properties[:rank], rank)
-    @properties[:northwest] = clear(@properties[:northwest], northwest(file, rank))
-    @properties[:northeast] = clear(@properties[:northeast], northeast(file, rank))
   end
 
   def northwest(file, rank)
@@ -51,17 +32,23 @@ class N_Queens
     [square / @N, square % @N]
   end
 
-  def solve(depth=0, file=0, &block)
-    if depth == @N
+  def solve(file=0, ranks=0, diag1s=0, diag2s=0, &block)
+    if file == @N
       yield @queens
     else
-      for rank in 0..(@N-1) do
-        if test_and_set(file, rank)
-          @queens.push(to_square(file, rank))
-          solve(depth+1, file+1, &block)
-          clear_all(file, rank)
-          @queens.pop
-        end
+      @N.times do |rank|
+        next if get(ranks, rank)
+         diag1 = northwest(file, rank)
+        next if get(diag1s, diag1)
+        diag2 = northeast(file, rank)
+        next if get(diag2s, diag2)
+        @queens.push(to_square(file, rank))
+        solve(file+1,
+              set(ranks, rank),
+              set(diag1s, diag1),
+              set(diag2s, diag2),
+              &block)
+        @queens.pop
       end
     end
   end
