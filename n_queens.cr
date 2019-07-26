@@ -1,7 +1,7 @@
 alias Index = Int32
 alias Square = Tuple(Index, Index)
 
-class N_Queens
+class NQueens
   def initialize(n : Index)
     @N = n
     @queens = [] of Square
@@ -15,8 +15,16 @@ class N_Queens
     file + @N - rank
   end
 
-  def safe?(file : Index, rank : Index) : Bool
-    @queens.all?{ |f, r| r != rank && nw(f, r) != nw(file, rank) && ne(f, r) != ne(file, rank) }
+  def unsafe?(file : Index, rank : Index) : Bool
+    @queens.any?{ |f, r| r == rank || nw(f, r) == nw(file, rank) || ne(f, r) == ne(file, rank) }
+  end
+
+  def move!(file, rank)
+    @queens.push({file, rank})
+  end
+
+  def unmove!(file, rank)
+    @queens.pop
   end
 
   def solve(file : Index = 0, &block : Array(Square) -> Array(Square))
@@ -24,10 +32,10 @@ class N_Queens
       yield @queens
     else
       @N.times do |rank|
-        next unless safe?(file, rank)
-        @queens.push({file, rank})
+        next if unsafe?(file, rank)
+        move!(file, rank)
         solve(file+1, &block)
-        @queens.pop
+        unmove!(file, rank)
       end
     end
   end
@@ -37,15 +45,19 @@ class N_Queens
     queens.each { |file, rank| board[rank][file] = 'Q' }
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
-end
 
-N = (ARGV[0] || 8).to_i
-display = ARGV.size > 1 && ARGV[1] == "display"
-n_queens = N_Queens.new(N)
-i = 0
-n_queens.solve do |queens|
-  i += 1
-  puts "\n#{i}: \n#{n_queens.queens_to_board(queens)}" if display
-  queens
+  def self.solve_and_display(n : Index, display : Bool)
+    i = 0
+    n_queens = new(n)
+    n_queens.solve do |queens|
+      i += 1
+      puts "\n#{i}:\n#{n_queens.queens_to_board(queens)}" if display
+      queens
+    end
+    puts i unless display
+  end
+
+  def self.solve_command
+    solve_and_display((ARGV[0] || 8).to_i, ARGV.size > 1 && ARGV[1] == "display")
+  end
 end
-puts "#{i}" unless display
