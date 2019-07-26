@@ -1,63 +1,49 @@
 class N_Queens
+  attr_accessor :calls
+
   def initialize(n)
+    @calls = 0
     @N = n
-    @attacks = Array.new(n*n) { nil }
-    @counts = Array.new(n*n) { 0 }
     @queens = []
   end
 
-  def to_square(file, rank)
-    file*@N+rank
+  def nw(file, rank)
+    file + rank
   end
 
-  def from_square(square)
-    [square / @N, square % @N]
+  def ne(file, rank)
+    file + @N - rank
   end
 
-  def one_direction_from(squares, file, rank, file_delta, rank_delta)
-    file += file_delta
-    rank += rank_delta
-    while (0 <= file && file < @N &&
-           0 <= rank && rank < @N) do
-      squares << to_square(file, rank)
-      file += file_delta
-      rank += rank_delta
-    end
+  def unsafe?(file, rank)
+    @queens.any?{ |f, r| r == rank || nw(f, r) == nw(file, rank) || ne(f, r) == ne(file, rank) }
   end
 
-  def attacks(queen)
-    file, rank = from_square(queen)
-    squares = [queen]
-    [[1,0], [0,1], [1,1], [-1,1]].each do |file_delta, rank_delta|
-      one_direction_from(squares, file, rank,  file_delta,  rank_delta)
-      one_direction_from(squares, file, rank, -file_delta, -rank_delta)
-    end
-    squares
+  def move!(file, rank)
+    @queens.push([file, rank])
+  end
+
+  def unmove!(file, rank)
+    @queens.pop
   end
 
   def solve(file=0, &block)
+    @calls += 1
     if file == @N
       yield @queens
     else
       @N.times do |rank|
-        queen = to_square(file, rank)
-        next if @counts[queen] > 0
-        @queens.push(queen)
-        hits = (@attacks[queen] ||= attacks(queen))
-        hits.each { |square| @counts[square] += 1 }
+        next if unsafe?(file, rank)
+        move!(file, rank)
         solve(file+1, &block)
-        @queens.pop
-        hits.each { |square| @counts[square] -= 1 }
+        unmove!(file, rank)
       end
     end
   end
 
   def queens_to_board(queens)
     board = Array.new(@N){ ['.'] * @N }
-    queens.each do |queen|
-      file, rank = from_square(queen)
-      board[rank][file] = 'Q'
-    end
+    queens.each { |file, rank| board[rank][file] = 'Q' }
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
 end
@@ -68,6 +54,6 @@ n_queens = N_Queens.new(N)
 i = 0
 n_queens.solve do |queens|
   i += 1
-  puts "#{i}: \n#{n_queens.queens_to_board(queens)}" if display
+  puts "\n#{i}/#{n_queens.calls}: \n#{n_queens.queens_to_board(queens)}" if display
 end
-puts i unless display
+puts "#{i}/#{n_queens.calls}" unless display

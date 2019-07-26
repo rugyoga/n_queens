@@ -8,6 +8,9 @@ class N_Queens
   def initialize(n : Int32)
     @N = n
     @queens = [] of Square
+    @ranks  = Array(Bool).new(n){ false }
+    @diag1s = Array(Bool).new(2*n){ false }
+    @diag2s = Array(Bool).new(2*n){ false }
   end
 
   def nw(file : Index, rank : Index) : Diagonal
@@ -18,28 +21,20 @@ class N_Queens
     file + @N - rank
   end
 
-  def get(bitmask : Bitmask, i : Position) : Bool
-    (bitmask >> i) & 1 == 1
-  end
-
-  def set(bitmask : Bitmask, i : Position) : Bitmask
-    (1 << i) | bitmask
-  end
-
-  def unsafe?(file, rank, ranks, diag1s, diag2s) : Bool
-    diag1 = nw(file, rank)
-    diag2 = ne(file, rank)
-    get(ranks, rank) || get(diag1s, diag1) || get(diag2s, diag2)
-  end
-
-  def solve(file : Index=0, ranks : Bitmask = 0, diag1s : Bitmask = 0, diag2s : Bitmask = 0, &block : Array(Square) -> Array(Square))
+  def solve(file : Index=0, &block : Array(Square) -> Array(Square))
     if file == @N
       yield @queens
     else
       @N.times do |rank|
-        next if unsafe?(file, rank, ranks, diag1s, diag2s)
+        next if @ranks[rank]
+        diag1 = nw(file, rank)
+        next if @diag1s[diag1]
+        diag2 = ne(file, rank)
+        next if @diag2s[diag2]
         @queens.push({file, rank})
-        solve(file+1, set(ranks, rank), set(diag1s, diag1), set(diag2s, diag2), &block)
+        @ranks[rank] = @diag1s[diag1] = @diag2s[diag2] = true
+        solve(file+1, &block)
+        @ranks[rank] = @diag1s[diag1] = @diag2s[diag2] = false
         @queens.pop
       end
     end
