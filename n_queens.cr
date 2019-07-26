@@ -45,8 +45,8 @@ class N_Queens
     @attacks[queen]
   end
 
-  def solve(depth : Int32=0, file : Index=0, &block : Array(Square) -> Array(Square))
-    if depth == @N
+  def solve(file : Index=0, &block : Array(Square) -> Array(Square))
+    if file == @N
       yield @queens
     else
       @N.times do |rank|
@@ -55,7 +55,7 @@ class N_Queens
         @queens.push(queen)
         hits = memoed_attacks(queen)
         hits.each { |square| @counts[square] += 1 }
-        solve(depth+1, file+1, &block)
+        solve(file+1, &block)
         @queens.pop
         hits.each { |square| @counts[square] -= 1 }
       end
