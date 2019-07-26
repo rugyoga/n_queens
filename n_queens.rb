@@ -56,9 +56,9 @@ class N_Queens
     board = Array.new(@N){ ['.'] * @N }
     queens.each do |queen|
       file, rank = from_square(queen)
-      board[rank][file] = "Q"
+      board[rank][file] = 'Q'
     end
-    board.reverse.map{ |rank| rank.join('') }.join("\n")
+    board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
 end
 
