@@ -1,4 +1,3 @@
 *.dwarf
-n_queens
-n_queens_bitwise
+*_run
 .gitignore

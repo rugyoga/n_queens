@@ -32,12 +32,12 @@ class NQueensCounts < NQueens
   end
 
   def move!(file, rank)
-    @queens.push({file,rank})
+    super(file, rank)
     @attacks[file][rank].each { |f, r| @counts[f][r] += 1 }
   end
 
   def unmove!(file, rank)
-    @queens.pop
+    super(file, rank)
     @attacks[file][rank].each { |f, r| @counts[f][r] -= 1 }
   end
 end

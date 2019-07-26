@@ -7,16 +7,20 @@ class NQueens
     @queens = [] of Square
   end
 
-  def nw(file : Index, rank : Index) : Index
+  def northwest(file : Index, rank : Index) : Index
     file + rank
   end
 
-  def ne(file : Index, rank : Index) : Index
+  def northeast(file : Index, rank : Index) : Index
     file + @N - rank
   end
 
   def unsafe?(file : Index, rank : Index) : Bool
-    @queens.any?{ |f, r| r == rank || nw(f, r) == nw(file, rank) || ne(f, r) == ne(file, rank) }
+    @queens.any? do |f, r|
+      r == rank ||
+      northwest(f, r) == northwest(file, rank) ||
+      northeast(f, r) == northeast(file, rank)
+    end
   end
 
   def move!(file, rank)
@@ -27,9 +31,9 @@ class NQueens
     @queens.pop
   end
 
-  def solve(file : Index = 0, &block : Array(Square) -> Array(Square))
+  def solve(file : Index = 0, &block : NQueens -> NQueens)
     if file == @N
-      yield @queens
+      yield self
     else
       @N.times do |rank|
         next if unsafe?(file, rank)
@@ -40,18 +44,17 @@ class NQueens
     end
   end
 
-  def queens_to_board(queens : Array(Square)) : String
+  def to_s : String
     board = Array.new(@N){ ['.'] * @N }
-    queens.each { |file, rank| board[rank][file] = 'Q' }
+    @queens.each { |file, rank| board[rank][file] = 'Q' }
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
 
   def self.solve_and_display(n : Index, display : Bool)
     i = 0
-    n_queens = new(n)
-    n_queens.solve do |queens|
+    new(n).solve do |queens|
       i += 1
-      puts "\n#{i}:\n#{n_queens.queens_to_board(queens)}" if display
+      puts "\n#{i}:\n#{queens.to_s}" if display
       queens
     end
     puts i unless display
