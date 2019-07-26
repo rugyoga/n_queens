@@ -1,8 +1,5 @@
-class N_Queens
-  attr_accessor :calls
-
+class NQueens
   def initialize(n)
-    @calls = 0
     @N = n
     @queens = []
   end
@@ -28,7 +25,6 @@ class N_Queens
   end
 
   def solve(file=0, &block)
-    @calls += 1
     if file == @N
       yield @queens
     else
@@ -46,14 +42,20 @@ class N_Queens
     queens.each { |file, rank| board[rank][file] = 'Q' }
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
+
+  def self.solve_and_display(n, display)
+    n_queens = new(n)
+    i = 0
+    n_queens.solve do |queens|
+      i += 1
+      puts "\n#{i}:\n#{n_queens.queens_to_board(queens)}" if display
+    end
+    puts i unless display
+  end
+
+  def self.solve_command
+    solve_and_display((ARGV[0] || 8).to_i, ARGV.size > 1 && ARGV[1] == "display")
+  end
 end
 
-N = (ARGV[0] || 8).to_i
-display = ARGV.size > 1 && ARGV[1] == "display"
-n_queens = N_Queens.new(N)
-i = 0
-n_queens.solve do |queens|
-  i += 1
-  puts "\n#{i}/#{n_queens.calls}: \n#{n_queens.queens_to_board(queens)}" if display
-end
-puts "#{i}/#{n_queens.calls}" unless display
+NQueens.solve_command if __FILE__ == $0
