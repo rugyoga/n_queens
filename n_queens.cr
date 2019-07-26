@@ -4,7 +4,7 @@ alias Square = Int32
 class N_Queens
   def initialize(n : Int32)
     @N = n
-    @attacks = Array(Array(Square)).new(n*n) { Array(Square).new }
+    @attacks = Array(Array(Square)).new(n*n) { Array(Square).new(27) }
     @counts = Array(Int32).new(n*n) { 0 }
     @queens = [] of Square
   end
@@ -17,7 +17,7 @@ class N_Queens
     {square / @N, square % @N}
   end
 
-  def one_direction_from(squares, file, rank, file_delta, rank_delta)
+  def one_direction_from(squares : Array(Square), file : Index, rank : Index, file_delta : Index, rank_delta : Index)
     file += file_delta
     rank += rank_delta
     while (0 <= file && file < @N &&
@@ -62,31 +62,21 @@ class N_Queens
     end
   end
 
-  def square_to_s(square : Square) : String
-    file, rank = from_square(square)
-    "#{(file+'a'.ord).chr}#{rank+1}"
-  end
-
-  def squares_to_s(squares : Array(Square)) : String
-    "[#{squares.map{|square| square_to_s(square) }.join(", ")}]"
-  end
-
   def queens_to_board(queens : Array(Square)) : String
     board = Array(Array(Char)).new(@N){ ['.'] * @N }
-    queens.each do |queen|
-      file, rank = from_square(queen)
+    queens.map{ |q| from_square(q) }.each do |file, rank|
       board[rank][file] = 'Q'
     end
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
 end
 
-N = (ARGV[0] || 8).to_i
-n_queens = N_Queens.new(N)
+n_queens = N_Queens.new((ARGV[0] || 8).to_i)
+display = ARGV.size > 1 && ARGV[1] == "display"
 i = 0
 n_queens.solve() do |queens|
-  puts "#{i += 1}:"
-  puts n_queens.squares_to_s(queens)
-  puts n_queens.queens_to_board(queens)
+  i += 1
+  puts "#{i}:\n#{n_queens.queens_to_board(queens)}" if display
   queens
 end
+puts i unless display

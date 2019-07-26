@@ -35,30 +35,21 @@ class N_Queens
     squares
   end
 
-  def solve(depth=0, file=0, &block)
-    if depth == @N
+  def solve(file=0, &block)
+    if file == @N
       yield @queens
     else
-      for rank in 0..(@N-1) do
+      @N.times do |rank|
         queen = to_square(file, rank)
         next if @counts[queen] > 0
         @queens.push(queen)
         hits = (@attacks[queen] ||= attacks(queen))
         hits.each { |square| @counts[square] += 1 }
-        solve(depth+1, file+1, &block)
+        solve(file+1, &block)
         @queens.pop
         hits.each { |square| @counts[square] -= 1 }
       end
     end
-  end
-
-  def square_to_s(square)
-    file, rank = from_square(square)
-    "#{(file+"a".ord).chr}#{rank+1}"
-  end
-
-  def squares_to_s(squares)
-    "[#{squares.map{|square| square_to_s(square) }.join(', ')}]"
   end
 
   def queens_to_board(queens)
@@ -72,10 +63,11 @@ class N_Queens
 end
 
 N = (ARGV[0] || 8).to_i
+display = ARGV.size > 1 && ARGV[1] == "display"
 n_queens = N_Queens.new(N)
 i = 0
 n_queens.solve do |queens|
-  puts "#{i += 1}:"
-  puts n_queens.squares_to_s(queens)
-  puts n_queens.queens_to_board(queens)
+  i += 1
+  puts "#{i}: \n#{n_queens.queens_to_board(queens)}" if display
 end
+puts i unless display

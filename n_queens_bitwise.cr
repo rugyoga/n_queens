@@ -47,8 +47,8 @@ class N_Queens
   end
 end
 
-display = ARGV.size > 1 && ARGV[1] == "display"
 n_queens = N_Queens.new((ARGV[0] || 8).to_i)
+display = ARGV.size > 1 && ARGV[1] == "display"
 i = 0
 n_queens.solve() do |queens|
   i += 1
