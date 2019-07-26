@@ -1,8 +1,11 @@
+# frozen_string_literal: true
+
 require_relative 'n_queens'
 
+# https://medium.com/@guy.argo/efficient-n-queens-solution-c58706170a3a
 class NQueensBitmask < NQueens
-  def initialize(n)
-    super(n)
+  def initialize(size)
+    super(size)
     @ranks = 0
     @northwests = 0
     @northeasts = 0
@@ -22,8 +25,8 @@ class NQueensBitmask < NQueens
 
   def unsafe?(file, rank)
     get?(@ranks, rank) ||
-    get?(@northwests, northwest(file, rank)) ||
-    get?(@northeasts, northeast(file, rank))
+      get?(@northwests, northwest(file, rank)) ||
+      get?(@northeasts, northeast(file, rank))
   end
 
   def move!(file, rank)
@@ -41,4 +44,4 @@ class NQueensBitmask < NQueens
   end
 end
 
-NQueensBitmask.solve_command if __FILE__ == $0
+NQueensBitmask.solve_command if $PROGRAM_NAME == __FILE__
