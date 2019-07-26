@@ -3,9 +3,9 @@ require_relative 'n_queens'
 class NQueensBitmask < NQueens
   def initialize(n)
     super(n)
-    @ranks  = 0
-    @nws    = 0
-    @nes    = 0
+    @ranks = 0
+    @northwests = 0
+    @northeasts = 0
   end
 
   def get?(bitmask, offset)
@@ -21,21 +21,23 @@ class NQueensBitmask < NQueens
   end
 
   def unsafe?(file, rank)
-    get?(@ranks, rank) || get?(@nws, nw(file, rank)) || get?(@nes, ne(file, rank))
+    get?(@ranks, rank) ||
+    get?(@northwests, northwest(file, rank)) ||
+    get?(@northeasts, northeast(file, rank))
   end
 
   def move!(file, rank)
     super(file, rank)
     @ranks = set!(@ranks, rank)
-    @nws = set!(@nws, nw(file, rank))
-    @nes = set!(@nes, ne(file, rank))
+    @northwests = set!(@northwests, northwest(file, rank))
+    @northeasts = set!(@northeasts, northeast(file, rank))
   end
 
   def unmove!(file, rank)
     super(file, rank)
     @ranks = clear!(@ranks, rank)
-    @nws = clear!(@nws, nw(file, rank))
-    @nes = clear!(@nes, ne(file, rank))
+    @northwests = clear!(@northwests, northwest(file, rank))
+    @northeasts = clear!(@northeasts, northeast(file, rank))
   end
 end
 
