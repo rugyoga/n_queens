@@ -4,7 +4,7 @@ alias Square = Int32
 class N_Queens
   def initialize(n : Int32)
     @N = n
-    @attacks = Array(Array(Square)).new(n*n) { Array(Square).new(27) }
+    @attacks = Array(Array(Square)).new(n*n) { Array(Square).new(4*@N-4) }
     @counts = Array(Int32).new(n*n) { 0 }
     @queens = [] of Square
   end
