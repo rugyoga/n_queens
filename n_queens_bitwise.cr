@@ -27,16 +27,19 @@ class N_Queens
   end
 
   def solve(file : Index=0, ranks : Bitmask = 0, diag1s : Bitmask = 0, diag2s : Bitmask = 0, &block : Array(Square) -> Array(Square))
-    yield @queens if file == @N
-    @N.times do |rank|
-      next if get(ranks, rank)
-      diag1 = nw(file, rank)
-      next if get(diag1s, diag1)
-      diag2 = ne(file, rank)
-      next if get(diag2s, diag2)
-      @queens.push({file, rank})
-      solve(file+1, set(ranks, rank), set(diag1s, diag1), set(diag2s, diag2), &block)
-      @queens.pop
+    if file == @N
+      yield @queens
+    else
+      @N.times do |rank|
+        next if get(ranks, rank)
+        diag1 = nw(file, rank)
+        next if get(diag1s, diag1)
+        diag2 = ne(file, rank)
+        next if get(diag2s, diag2)
+        @queens.push({file, rank})
+        solve(file+1, set(ranks, rank), set(diag1s, diag1), set(diag2s, diag2), &block)
+        @queens.pop
+      end
     end
   end
 
