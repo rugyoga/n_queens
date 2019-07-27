@@ -4,8 +4,8 @@ alias Position = Int32
 alias Bitmask = Int32
 
 class NQueensBitmask < NQueens
-  def initialize(n : Int32)
-    super(n)
+  def initialize(size : Int32)
+    super(size)
     @ranks = 0
     @northwests = 0
     @northeasts = 0

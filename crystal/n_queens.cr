@@ -2,8 +2,8 @@ alias Index = Int32
 alias Square = Tuple(Index, Index)
 
 class NQueens
-  def initialize(n : Index)
-    @N = n
+  def initialize(size : Index)
+    @size = size
     @queens = [] of Square
   end
 
@@ -12,7 +12,7 @@ class NQueens
   end
 
   def northeast(file : Index, rank : Index) : Index
-    file + @N - rank
+    file + @size - rank
   end
 
   def unsafe?(file : Index, rank : Index) : Bool
@@ -32,10 +32,10 @@ class NQueens
   end
 
   def solve(file : Index = 0, &block : NQueens -> NQueens)
-    if file == @N
+    if file == @size
       yield self
     else
-      @N.times do |rank|
+      @size.times do |rank|
         next if unsafe?(file, rank)
         move!(file, rank)
         solve(file+1, &block)
@@ -45,14 +45,14 @@ class NQueens
   end
 
   def to_s : String
-    board = Array.new(@N){ ['.'] * @N }
+    board = Array.new(@size){ ['.'] * @size }
     @queens.each { |file, rank| board[rank][file] = 'Q' }
     board.reverse.map{ |rank| rank.join("") }.join("\n")
   end
 
-  def self.solve_and_display(n : Index, display : Bool)
+  def self.solve_and_display(size : Index, display : Bool)
     i = 0
-    new(n).solve do |queens|
+    new(size).solve do |queens|
       i += 1
       puts "\n#{i}:\n#{queens.to_s}" if display
       queens

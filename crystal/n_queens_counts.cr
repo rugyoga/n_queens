@@ -1,8 +1,8 @@
 require "./n_queens"
 
 class NQueensCounts < NQueens
-  def initialize(n : Int32)
-    super(n)
+  def initialize(size : Int32)
+    super(size)
     @attacks = Array(Array(Array(Square))).new(n) { |file| Array(Array(Square)).new(n) { |rank| attacks(file, rank) } }
     @counts  = Array(Array(Int32)).new(n) { Array.new(n) { 0 } }
   end
@@ -10,8 +10,8 @@ class NQueensCounts < NQueens
   def one_direction_from(squares : Array(Square), file : Index, rank : Index, file_delta : Index, rank_delta : Index)
     file += file_delta
     rank += rank_delta
-    while (0 <= file && file < @N &&
-           0 <= rank && rank < @N)
+    while (0 <= file && file < @size &&
+           0 <= rank && rank < @size)
       squares << {file, rank}
       file += file_delta
       rank += rank_delta
