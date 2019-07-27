@@ -68,7 +68,9 @@ void solve(cindex file, void (*callback)(int[])) {
 }
 
 void display(solution current) {
-  for (int file = N; file >=0; file--) {
+  i += 1;
+  printf("%d:\n", i);
+  for (cindex file = 0; file < N; file++) {
     cindex before, rank = current[file];
     for (before = 0; before < rank; before++) {
       printf(".");
@@ -80,6 +82,7 @@ void display(solution current) {
     }
     printf("\n");
   }
+  printf("\n");
 }
 
 void count(solution current) {
