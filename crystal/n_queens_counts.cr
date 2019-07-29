@@ -3,8 +3,8 @@ require "./n_queens"
 class NQueensCounts < NQueens
   def initialize(size : Int32)
     super(size)
-    @attacks = Array(Array(Array(Square))).new(n) { |file| Array(Array(Square)).new(n) { |rank| attacks(file, rank) } }
-    @counts  = Array(Array(Int32)).new(n) { Array.new(n) { 0 } }
+    @attacks = Array(Array(Array(Square))).new(size) { |file| Array(Array(Square)).new(size) { |rank| attacks(file, rank) } }
+    @counts  = Array(Array(Int32)).new(size) { Array.new(size) { 0 } }
   end
 
   def one_direction_from(squares : Array(Square), file : Index, rank : Index, file_delta : Index, rank_delta : Index)
