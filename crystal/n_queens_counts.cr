@@ -27,16 +27,16 @@ class NQueensCounts < NQueens
     squares
   end
 
-  def unsafe?(file, rank)
+  def unsafe?(file : Index, rank : Index) : Bool
     @counts[file][rank] > 0
   end
 
-  def move!(file, rank)
+  def move!(file : Index, rank : Index)
     super(file, rank)
     @attacks[file][rank].each { |f, r| @counts[f][r] += 1 }
   end
 
-  def unmove!(file, rank)
+  def unmove!(file : Index, rank : Index)
     super(file, rank)
     @attacks[file][rank].each { |f, r| @counts[f][r] -= 1 }
   end
