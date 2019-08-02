@@ -20,12 +20,10 @@ defmodule N_Queens do
   end
 
   defp print(n, row) do
-    IO.puts frame = "+" <> String.duplicate("-", 2*n+1) <> "+"
     Enum.each(row, fn x ->
-      line = Enum.map_join(0..n-1, fn i -> if x==i, do: "Q ", else: ". " end)
-      IO.puts "| #{line}|"
+      IO.puts Enum.map_join(0..n-1, fn i -> if x==i, do: "Q", else: "." end)
     end)
-    IO.puts frame
+    IO.puts "\n"
   end
 end
 
