@@ -1,4 +1,4 @@
-defmodule NQueensSets do
+defmodule NQueens.Sets do
   def queen(n) do
     solve(n, [], MapSet.new, MapSet.new)
   end
@@ -22,26 +22,4 @@ defmodule NQueensSets do
       end
     )
   end
-
-  def to_string({n, row}) do
-    "\n" <>
-      Enum.map_join(row, "\n", fn x ->
-        Enum.map_join(0..(n - 1), &if(x == &1, do: "Q", else: "."))
-      end)
-  end
-end
-
-solutions =
-  System.argv()
-  |> Enum.at(0, "8")
-  |> String.to_integer()
-  |> NQueensSets.queen()
-
-if Enum.at(System.argv(), 1, "") == "display" do
-  solutions
-  |> Stream.map(&NQueensSets.to_string/1)
-  |> Stream.each(&IO.puts/1)
-  |> Stream.run()
-else
-  solutions |> Enum.count() |> IO.puts
 end

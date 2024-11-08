@@ -1,4 +1,4 @@
-defmodule NQueensAsyncStream do
+defmodule NQueens.AsyncStream do
   def queen(n) do
     solve(n, [], [], [])
   end
@@ -27,21 +27,4 @@ defmodule NQueensAsyncStream do
       Stream.flat_map(0..(n - 1), worker)
     end
   end
-
-  def to_string({n, row}) do
-    Enum.map_join(row, "\n", fn x ->
-      Enum.map_join(0..(n - 1), &if(x == &1, do: "Q", else: "."))
-    end) <> "\n"
-  end
-end
-
-solutions = System.argv() |> Enum.at(0, "8") |> String.to_integer() |> NQueensAsyncStream.queen()
-
-if Enum.at(System.argv(), 1, "") == "display" do
-  solutions
-  |> Stream.map(&NQueensAsyncStream.to_string/1)
-  |> Stream.each(&IO.puts/1)
-  |> Stream.run()
-else
-  solutions |> Enum.count() |> IO.puts
 end
