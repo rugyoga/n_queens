@@ -1,6 +1,6 @@
-defmodule NQueens do
+defmodule NQueensSetsSimple do
   def queen(n, display \\ true) do
-    solve(n, [], [], [], display)
+    solve(n, [], MapSet.new(), MapSet.new(), display)
   end
 
   defp solve(n, row, _, _, display) when n==length(row) do
@@ -14,7 +14,7 @@ defmodule NQueens do
       if (add in add_list) or (sub in sub_list) do
         0
       else
-        solve(n, [x|row], [add | add_list], [sub | sub_list], display)
+        solve(n, [x|row], MapSet.put(add_list, add), MapSet.put(sub_list, sub), display)
       end
     end) |> Enum.sum                    # total of the solution
   end
@@ -29,4 +29,4 @@ end
 
 n = String.to_integer(Enum.at(System.argv, 0, "8"))
 display = Enum.at(System.argv, 1, "") == "display"
-IO.puts NQueens.queen(n, display)
+IO.puts NQueensSetsSimple.queen(n, display)
