@@ -30,7 +30,6 @@ defmodule Mix.Tasks.Solution do
       else
         usage.()
       end
-      NQueens.AsyncStream.queen(n) |> Enum.count()
     end
   end
 end
