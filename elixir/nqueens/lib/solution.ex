@@ -1,4 +1,8 @@
 defmodule NQueens.Solution do
+  @moduledoc """
+  struct for returning results and pretty printer
+  plus directory opf solution
+  """
   defstruct [:rows]
 
   defimpl String.Chars, for: NQueens.Solution do
