@@ -1,17 +1,25 @@
 defmodule NQueens.Binary do
+  @moduledoc """
+  N Queens solution using binary
+
+  BROKEN
+
+  DO NOT USE
+  """
 
   def queen(n) do
-    solve(n, [], <<0::n>>, <<0::n>>)
+    solve(n, [], 0, 0) #<<0::n>>, <<0::n>>)
   end
 
-  def member?(offset, binary) do
-    <<bit::1, padding::(offset-1)>> = binary
-    bit
+  def member?(_offset, _binary) do
+    # <<bit::1, padding::(offset-1)>> = binary
+    # bit
+    true
   end
 
-  def set(offset, binary) do
-    <<rest, bit::1, left::(offset-1)>> = binary
-    <<rest, 1::1, left>>
+  def set(_offset, _binary) do
+    # <<rest, bit::1, left::(offset-1)>> = binary
+    # <<rest, 1::1, left>>
   end
 
   defp solve(n, row, _, _) when n == length(row) do

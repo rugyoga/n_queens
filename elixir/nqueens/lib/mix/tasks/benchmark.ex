@@ -15,18 +15,9 @@ defmodule Mix.Tasks.Benchmark do
 
     n = String.to_integer(n_str)
 
-    Benchee.run(
-      %{
-        "async_stream" => fn -> NQueens.AsyncStream.queen(n) |> Enum.count() end,
-        "bitmask" => fn -> NQueens.Binary.queen(n) |> Enum.count() end,
-        "bitmask" => fn -> NQueens.Bitmask.queen(n) |> Enum.count() end,
-        "enum" => fn -> NQueens.Enum.queen(n) |> Enum.count() end,
-        "multi_process" => fn -> NQueens.MultiProcess.queen(n) |> Enum.count() end,
-        "process" => fn -> NQueens.Process.queen(n) |> Enum.count() end,
-        "sets" => fn -> NQueens.Sets.queen(n) |> Enum.count() end,
-        "streams" => fn -> NQueens.Streams.queen(n) |> Enum.count() end,
-        "task" => fn -> NQueens.Task.queen(n) |> Enum.count() end
-      }
-    )
+    NQueens.Solution.directory()
+    |> Enum.map(fn {name, module} -> {name, fn -> module.queen(n) |> Enum.count() end} end)
+    |> Benchee.run()
+
   end
 end

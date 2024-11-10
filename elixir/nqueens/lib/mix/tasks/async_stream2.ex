@@ -1,9 +1,4 @@
-defmodule NQueens.AsyncStream do
-  @moduledoc """
-  N Queens solution based on Task.async_stream that ius ungodly slow
-
-  DO NOT USE
-  """
+defmodule NQueens.AsyncStream2 do
   alias NQueens.Solution
 
   def queen(n) do
@@ -22,9 +17,9 @@ defmodule NQueens.AsyncStream do
       |> Enum.reject(fn {_, nw, ne} -> nw in nw_diags or ne in ne_diags end)
 
     if depth > 0 do
-      candidates |> Task.async_stream(recurse, ordered: false) |> Enum.flat_map(fn {:ok, x} -> x end)
+      candidates |> Task.async_stream(recurse) |> Stream.flat_map(fn {:ok, x} -> x end)
     else
-      Enum.flat_map(candidates, recurse)
+      Stream.flat_map(candidates, recurse)
     end
   end
 end

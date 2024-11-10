@@ -1,6 +1,6 @@
-defmodule NQueens.MultiProcess do
+defmodule NQueens.MultiProcess2 do
   @moduledoc """
-  N Queens solution using processes
+  N Queens solution using processes and streams
   """
 
   alias NQueens.Solution
@@ -27,6 +27,7 @@ defmodule NQueens.MultiProcess do
     Enum.to_list(0..(n - 1)) -- rows
     |> Enum.map(&{&1, &1 + r, &1 - r})
     |> Enum.reject(fn {_, nw, ne} -> nw in nw_diags or ne in ne_diags end)
-    |> Enum.each(solver)
+    |> Stream.each(solver)
+    |> Stream.run()
   end
 end
