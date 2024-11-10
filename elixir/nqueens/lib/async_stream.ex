@@ -1,6 +1,6 @@
 defmodule NQueens.AsyncStream do
   @moduledoc """
-  N Queens solution based on Task.async_stream that ius ungodly slow
+  N Queens solution based on Task.async_stream that is ungodly slow
 
   DO NOT USE
   """

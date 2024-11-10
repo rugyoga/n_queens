@@ -1,6 +1,8 @@
 defmodule NQueens.MultiProcess2 do
   @moduledoc """
   N Queens solution using processes and streams
+
+  I don't understand why this is so goddamn slow!!!
   """
 
   alias NQueens.Solution

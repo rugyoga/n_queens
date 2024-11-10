@@ -17,11 +17,9 @@ defmodule NQueens.Solution do
       # #"binary"        => NQueens.Binary, not working
       "bitwise"       => NQueens.Bitwise,
       "enum"          => NQueens.Enum,
-      # "enum2"          => NQueens.Enum2,
-      # "enum3"          => NQueens.Enum3,
       "multi_process" => NQueens.MultiProcess,
       # "multi_process2" => NQueens.MultiProcess2,
-      # "process"       => NQueens.Process,
+      "process"       => NQueens.Process,
       "mapset"          => NQueens.MapSet,
       "streams"       => NQueens.Streams,
     }
