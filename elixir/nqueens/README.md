@@ -2,7 +2,9 @@
 
 A variety of solutions to the N Queens problem in Elixir.
 
-To add/subteract new ones, modify the directory function in lib/solutions.ex.
+See related [blog post](https://medium.com/@guy.argo/efficient-n-queens-solution-c58706170a3a)
+
+To add/subtract new ones, modify the `directory()` function in `lib/solution.ex`.
 
 test the output by doing:
 
