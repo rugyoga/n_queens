@@ -1,21 +1,18 @@
-# Nqueens
+## N Queens
 
-**TODO: Add description**
+A variety of solutions to the N Queens problem in Elixir.
 
-## Installation
+To add/subteract new ones, modify the directory function in lib/solutions.ex.
 
-If [available in Hex](https://hex.pm/docs/publish), the package can be installed
-by adding `nqueens` to your list of dependencies in `mix.exs`:
+test the output by doing:
 
-```elixir
-def deps do
-  [
-    {:nqueens, "~> 0.1.0"}
-  ]
-end
+```bash
+mix solution <size> <name of solution>
 ```
 
-Documentation can be generated with [ExDoc](https://github.com/elixir-lang/ex_doc)
-and published on [HexDocs](https://hexdocs.pm). Once published, the docs can
-be found at <https://hexdocs.pm/nqueens>.
+benchmark all the entries in `directory()`
+by doing:
 
+```bash
+mix benchmark <size>
+```
