@@ -11,25 +11,33 @@ defmodule Mix.Tasks.Solution do
   @impl Mix.Task
   def run(args) do
     Application.ensure_all_started(:nqueens)
-
-    [n_str | rest] = args
-
-    n = String.to_integer(n_str)
     directory = NQueens.Solution.directory()
-    usage = fn -> IO.puts "Supply solution name as the second argument.\nOptions are: #{directory |> Map.keys() |> Enum.join(", ")}" end
 
-    if rest == [] do
-      usage.()
-    else
-      which = hd(rest)
-      if Map.has_key?(directory, which) do
-        directory[which].queen(n)
+    #try do
+      [n_str | after_n] = args
+
+      n = String.to_integer(n_str)
+
+      [version | _after_version] = after_n
+
+      if Map.has_key?(directory, version) do
+        directory[version].queen(n)
         |> Stream.each(fn solution -> IO.puts solution end)
         |> Enum.count()
         |> IO.puts
       else
-        usage.()
+        usage(directory)
       end
-    end
+    #rescue e -> IO.puts inspect(e); usage(directory)
+  #end
+  end
+
+  defp choices(directory) do
+    directory |> Map.keys() |> Enum.join(", ")
+  end
+
+  def usage(directory) do
+    IO.puts "Supply solution name as the second argument.\nOptions are: #{choices(directory)}"
+    exit(1)
   end
 end
