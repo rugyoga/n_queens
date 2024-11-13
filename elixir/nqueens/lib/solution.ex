@@ -18,11 +18,11 @@ defmodule NQueens.Solution do
     %{
       "async_stream"  => NQueens.AsyncStream,
       "async_stream2" => NQueens.AsyncStream2,
-      "binary"        => NQueens.Binary,
+      # "binary"        => NQueens.Binary, broken
       "bitwise"       => NQueens.Bitwise,
       "enum"          => NQueens.Enum,
       "multi_process" => NQueens.MultiProcess,
-      # "multi_process2" => NQueens.MultiProcess2,
+      "multi_process2" => NQueens.MultiProcess2,
       "process"       => NQueens.Process,
       "mapset"        => NQueens.MapSet,
       "streams"       => NQueens.Streams,

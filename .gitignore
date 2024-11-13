@@ -2,3 +2,5 @@
 *_run
 .gitignore
 *.class
+deps
+_build
