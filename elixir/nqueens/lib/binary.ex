@@ -9,18 +9,24 @@ defmodule NQueens.Binary do
   alias NQueens.Solution
 
   def queen(n) do
-    solve(n, [], <<0::size(2*n+1)>>, <<0::size(2*n+1)>>)
+    solve(n, [], <<0::size(3*n)>>, <<0::size(3*n)>>)
+  end
+
+  # https://dev.to/tiemen/from-bitstring-to-base2-with-elixir-2ghj
+  def as_string(binary) do
+    for(<<x::size(1) <- binary>>, do: "#{x}")
+    |> Enum.chunk_every(8)
+    |> Enum.join(" ")
   end
 
   def member?(binary, offset) do
-   # IO.puts("member?(#{binary}, #{offset})")
-    <<_left::size(offset-1), bit::size(1), _rest::bitstring>> = binary
-    bit == <<1::size(1)>>
+    <<_left::size(offset), bit::size(1), _rest::bits>> = binary
+    bit == 1
   end
 
   def set(binary, offset) do
-    <<left::size(offset-1), _bit::size(1), rest::bitstring>> = binary
-    <<left, 1::size(1), rest::bitstring>>
+    <<left::size(offset), _bit::size(1), rest::bits>> = binary
+    <<left::size(offset), 1::size(1), rest::bits>>
   end
 
   defp solve(n, rows, _, _) when n == length(rows), do: [%Solution{rows: rows}]
