@@ -18,13 +18,19 @@ defmodule Mix.Tasks.Solution do
 
       n = String.to_integer(n_str)
 
-      [version | _after_version] = after_n
+      [version | after_version] = after_n
 
       if Map.has_key?(directory, version) do
-        directory[version].queen(n)
-        |> Stream.each(fn solution -> IO.puts solution end)
-        |> Enum.count()
-        |> IO.puts
+        if "display" in after_version do
+          directory[version].queen(n)
+          |> Stream.each(fn solution -> IO.puts solution end)
+          |> Enum.count()
+          |> IO.puts
+        else
+          directory[version].queen(n)
+          |> Enum.count()
+          |> IO.puts
+        end
       else
         usage(directory)
       end
