@@ -9,7 +9,7 @@ defmodule NQueens.Binary do
   alias NQueens.Solution
 
   def queen(n) do
-    solve(n, [], <<0::size(3*n)>>, <<0::size(3*n)>>)
+    solve(n, [], <<0::size(2*n+1)>>, <<0::size(2*n+1)>>)
   end
 
   # https://dev.to/tiemen/from-bitstring-to-base2-with-elixir-2ghj
